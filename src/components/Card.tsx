@@ -21,8 +21,9 @@ export default function Card({ id, image }: { id: string; image: string }) {
     >
       <div
         className={clsx(
-          "relative rounded border border-slate-100 preserve-3d w-full h-full duration-700",
-          (isInPair || isOpened) && "my-rotate-y-180"
+          "relative rounded preserve-3d w-full h-full duration-700",
+          (isInPair || isOpened) && "my-rotate-y-180",
+          isOpened ? "bg-amber-200" : "border border-slate-100"
         )}
       >
         <div className="absolute my-rotate-y-180 backface-hidden">
