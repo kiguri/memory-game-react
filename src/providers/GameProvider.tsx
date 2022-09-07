@@ -6,7 +6,7 @@ import {
   useCallback,
   type PropsWithChildren,
 } from "react";
-import moment, { type Moment } from "moment";
+import moment from "moment";
 
 type Pokemon = { id: string; image: string };
 
@@ -54,16 +54,19 @@ export const useGame = () => {
 };
 
 export const GameProvider = (props: PropsWithChildren) => {
-  const [pokemonsList, setPokemonsList] = useState(() => shuffle(pokemons));
+  const [pokemonsList, setPokemonsList] = useState<Pokemon[]>(() =>
+    shuffle(pokemons)
+  );
   const [isGameStart, setIsGameStart] = useState(false);
-  const [startTime, setStartTime] = useState<Moment>();
   const [playingTime, setPlayingTime] = useState(0);
   const [openedList, setOpenedList] = useState<string[]>([]);
   const [currentPair, setCurrentPair] = useState<string[]>([]);
 
+  // Thời gian chơi
   useEffect(() => {
     let interval: number;
     if (isGameStart) {
+      let startTime = moment();
       interval = setInterval(() => {
         setPlayingTime(moment().diff(startTime, "seconds"));
       });
@@ -72,8 +75,9 @@ export const GameProvider = (props: PropsWithChildren) => {
     return () => {
       clearInterval(interval);
     };
-  }, [isGameStart, startTime]);
+  }, [isGameStart]);
 
+  // Check 2 card khi mở
   useEffect(() => {
     let timeout: any = null;
     if (currentPair.length === 2) {
@@ -92,6 +96,7 @@ export const GameProvider = (props: PropsWithChildren) => {
     };
   }, [currentPair, openedList]);
 
+  // Check win nếu mở đủ 12 card
   useEffect(() => {
     if (openedList.length === 12) {
       setIsGameStart(false);
@@ -99,8 +104,8 @@ export const GameProvider = (props: PropsWithChildren) => {
   }, [openedList]);
 
   const start = useCallback(() => {
+    setPokemonsList(shuffle(pokemons));
     setIsGameStart(true);
-    setStartTime(moment());
     setOpenedList([]);
   }, []);
 
